@@ -1,4 +1,4 @@
-package com.example.bankdemo;
+package com.mashrq.bankdemo;
 
 import org.junit.Test;
 

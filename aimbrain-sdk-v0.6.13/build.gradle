@@ -1,0 +1,2 @@
+configurations.maybeCreate("default")
+artifacts.add("default", file('aimbrain-sdk-v0.6.13.aar'))
