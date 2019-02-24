@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -19,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +33,7 @@ import com.aimbrain.sdk.exceptions.SessionException;
 import com.aimbrain.sdk.faceCapture.FaceCaptureActivity;
 import com.aimbrain.sdk.faceCapture.VideoFaceCaptureActivity;
 import com.aimbrain.sdk.models.FaceAuthenticateModel;
+import com.aimbrain.sdk.models.FaceCompareModel;
 import com.aimbrain.sdk.models.FaceEnrollModel;
 import com.aimbrain.sdk.models.FaceTokenModel;
 import com.aimbrain.sdk.models.FaceTokenType;
@@ -42,6 +46,7 @@ import com.aimbrain.sdk.models.VoiceTokenType;
 import com.aimbrain.sdk.server.AMBNResponseErrorListener;
 import com.aimbrain.sdk.server.FaceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.FaceCapturesEnrollCallback;
+import com.aimbrain.sdk.server.FaceCompareCallback;
 import com.aimbrain.sdk.server.FaceTokenCallback;
 import com.aimbrain.sdk.server.ScoreCallback;
 import com.aimbrain.sdk.server.SessionCallback;
@@ -59,6 +64,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
+import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdBackRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdFrontRecognizer;
 import com.microblink.result.ResultActivity;
@@ -83,6 +89,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 import com.aimbrain.sdk.util.Logger;
 
 import org.json.JSONException;
@@ -124,6 +131,7 @@ public class RegisterActivity extends AppCompatActivity {
     private boolean isActive;
     public static byte[] video;
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,12 +150,13 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
 
-
     }
+
     private void scanAction(@NonNull UISettings activitySettings, @Nullable Intent helpIntent) {
         setupActivitySettings(activitySettings, helpIntent);
         ActivityRunner.startActivityForResult(this, MY_BLINKID_REQUEST_CODE, activitySettings);
     }
+
     /**
      * Starts scan activity. Activity that will be used is determined by the passed activity settings.
      * UI options are configured inside this method.
@@ -158,6 +167,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void scanAction(@NonNull UISettings activitySettings) {
         scanAction(activitySettings, null);
     }
+
     private void setupActivitySettings(@NonNull UISettings settings, @Nullable Intent helpIntent) {
         if (settings instanceof BeepSoundUIOptions) {
             // optionally, if you want the beep sound to be played after a scan
@@ -193,6 +203,7 @@ public class RegisterActivity extends AppCompatActivity {
             ((BaseScanUISettings) settings).setPinchToZoomAllowed(true);
         }
     }
+
     private void startResultActivity(Intent data) {
         // set intent's component to ResultActivity and pass its contents
         // to ResultActivity. ResultActivity will show how to extract
@@ -200,19 +211,19 @@ public class RegisterActivity extends AppCompatActivity {
         data.setComponent(new ComponentName(getApplicationContext(), ResultActivity.class));
         startActivity(data);
     }
+
     @OnClick({R.id.scan, R.id.cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan:
-               UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
+                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
                 ImageSettings.enableAllImages(uaeFront);
                 UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
                 ImageSettings.enableAllImages(uaeBack);
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
-
-               /* EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
+/*
+                EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
                 ImageSettings.enableAllImages(egyptFront);
-
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));*/
                 break;
             case R.id.cancel:
@@ -228,9 +239,11 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
         }
     }
+
     private RecognizerBundle prepareRecognizerBundle(@NonNull Recognizer<?, ?>... recognizers) {
         return new RecognizerBundle(recognizers);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -250,6 +263,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(myReceiver);
     }
+
     // Deserialize to single object.
     public List<RecognitionResultEntry> deserializeFromJson(String jsonString) {
         Gson gson = new Gson();
@@ -258,33 +272,90 @@ public class RegisterActivity extends AppCompatActivity {
         lst = new ArrayList<>(lst);
         return lst;
     }
-    public void faceEnrollButtonClick() {
 
-        faceAuthType();
-       /* final CharSequence[] items = {getString(R.string.auth_type_face), getString(R.string.auth_type_voice) };
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(getString(R.string.title_select_auth_type));
-        builder.setPositiveButton("Cancel", null);
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                if (item == 0) {
-                    //face selected
-                    faceAuthType();
-                } else {
-                    //voice selected
-                    voiceAuthType();
-                }
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();*/
+    public void faceEnrollButtonClick() {
+        progressDialog = Spinner.showSpinner(this);
+        ScoreManager.getInstance().clearCache();
+        try {
+            Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+                        hideSpinner();
+                        if (!isActive) {
+                            return;
+                        }
+                        Log.i("SESSION", "session id: " + session.getSessionId());
+                        Log.i("SESSION", "session face status: " + session.getFaceStatus());
+                        Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
+                        Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
+                        if (session.getFaceStatus() == SessionModel.BUILDING) {
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Face detection unavailable")
+                                    .setMessage("Generating template. Please try again in a few seconds")
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                    })
+                                    .show();
+                        } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
+
+                        } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
+                            SendCaptureImage();
+                        }
+                    }, new AMBNResponseErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            hideSpinner();
+                            //errorTextView.setText(getErrorMessage(error));
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Face detection unavailable")
+                                    .setMessage(error.getMessage())
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                    })
+                                    .show();
+                        }
+                    }
+            );
+        } catch (InternalException e) {
+            e.printStackTrace();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+        }
+
     }
+
+    private void SendCaptureImage() {
+        progressDialog = Spinner.showSpinner(this);
+        List<Bitmap> lst = new ArrayList<>();
+        lst.add(DataList.get(3).getImageValue());
+        try {
+            Manager.getInstance().sendProvidedFaceCapturesToEnroll(lst, new FaceCapturesEnrollCallback() {
+                @Override
+                public void success(FaceEnrollModel faceEnrollModel) {
+                    hideSpinner();
+                    faceAuthType();
+                }
+
+                @Override
+                public void failure(VolleyError volleyError) {
+                    hideSpinner();
+                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason: " + getErrorMessage(volleyError));
+                }
+            });
+        } catch (InternalException e) {
+            hideSpinner();
+            e.printStackTrace();
+        } catch (ConnectException e) {
+            hideSpinner();
+            e.printStackTrace();
+        } catch (SessionException e) {
+            hideSpinner();
+            e.printStackTrace();
+        }
+    }
+
     private void faceAuthType() {
         try {
             createSessionUsingPhoto();
         } catch (ConnectException | InternalException e) {
-           hideSpinner();
-           // errorTextView.setText(e.getMessage());
+            hideSpinner();
+            // errorTextView.setText(e.getMessage());
             new AlertDialog.Builder(RegisterActivity.this)
                     .setTitle("Face Auth unavailable")
                     .setMessage(e.getMessage())
@@ -293,11 +364,12 @@ public class RegisterActivity extends AppCompatActivity {
                     .show();
         }
     }
+
     private void voiceAuthType() {
         try {
             createSessionUsingVoice();
         } catch (ConnectException | InternalException e) {
-           hideSpinner();
+            hideSpinner();
             //errorTextView.setText(e.getMessage());
             new AlertDialog.Builder(RegisterActivity.this)
                     .setTitle("voice Auth unavailable")
@@ -307,31 +379,32 @@ public class RegisterActivity extends AppCompatActivity {
                     .show();
         }
     }
+
     private void createSessionUsingPhoto() throws ConnectException, InternalException {
-       progressDialog = Spinner.showSpinner(this);
+        progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
-        Manager.getInstance().createSession(getDeviceIMEI(this)+String.valueOf(Globals.UserID), getApplicationContext(), session -> {
-           hideSpinner();
-           if (!isActive) {
-                return;
-            }
-            Log.i("SESSION", "session id: " + session.getSessionId());
-            Log.i("SESSION", "session face status: " + session.getFaceStatus());
-            Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
-            Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
-            if (session.getFaceStatus() == SessionModel.BUILDING) {
-                new AlertDialog.Builder(RegisterActivity.this)
-                        .setTitle("Face detection unavailable")
-                        .setMessage("Generating template. Please try again in a few seconds")
-                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        })
-                        .show();
-            } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
-                authenticateWithPhotos();
-            } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
-                showEnrollmentDialog();
-            }
-        }, new AMBNResponseErrorListener() {
+        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+                    hideSpinner();
+                    if (!isActive) {
+                        return;
+                    }
+                    Log.i("SESSION", "session id: " + session.getSessionId());
+                    Log.i("SESSION", "session face status: " + session.getFaceStatus());
+                    Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
+                    Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
+                    if (session.getFaceStatus() == SessionModel.BUILDING) {
+                        new AlertDialog.Builder(RegisterActivity.this)
+                                .setTitle("Face detection unavailable")
+                                .setMessage("Generating template. Please try again in a few seconds")
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                })
+                                .show();
+                    } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
+                        authenticateWithPhotos();
+                    } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
+                        showEnrollmentDialog();
+                    }
+                }, new AMBNResponseErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         hideSpinner();
@@ -347,12 +420,15 @@ public class RegisterActivity extends AppCompatActivity {
         );
 
     }
+
     private void authenticateWithPhotos() {
         openFaceImageCaptureActivity(authenticationRequestcode, photoAuthUpperText, photoLowerText, faceAuthenticationHint);
     }
+
     private void openFaceImageCaptureActivity(int requestCode, String upperText, String lowerText) {
         openFaceImageCaptureActivity(requestCode, upperText, lowerText, null);
     }
+
     private void openFaceImageCaptureActivity(int requestCode, String upperText, String lowerText, String recordingHint) {
 
         try {
@@ -382,6 +458,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
     }
+
     private void showEnrollmentDialog() {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setMessage("Please enroll before using Facial authentication")
@@ -389,9 +466,10 @@ public class RegisterActivity extends AppCompatActivity {
                     triesAmount = 0;
                     enrollWithPhotos();
                 }).setNegativeButton("Cancel", (dialog, which) -> {
-                    hideSpinner();
-                }).setCancelable(false).show();
+            hideSpinner();
+        }).setCancelable(false).show();
     }
+
     private void enrollWithPhotos() {
         if (triesAmount < 1) {
             openFaceImageCaptureActivity(enrollmentRequestcode, faceEnrollStepsTexts[triesAmount], photoLowerText);
@@ -403,39 +481,68 @@ public class RegisterActivity extends AppCompatActivity {
             new AlertDialog.Builder(RegisterActivity.this)
                     .setMessage("Video Enrollment finished successfully when you press ok we will open voice Enrollment")
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        //should compare
+
+                      /*  try {
+                            //should compare cropped image first with vedio
+                            List<Bitmap> facialImages1 = new ArrayList<>();
+                            facialImages1.add(DataList.get(3).getImageValue());
+                            byte[] decodeResponse = Base64.decode(this.video, Base64.DEFAULT | Base64.NO_WRAP);
+                            Bitmap bitmap = BitmapFactory.decodeByteArray(decodeResponse, 0, decodeResponse.length);
+                            List<Bitmap> facialImages2 = new ArrayList<>();
+                            facialImages2.add(bitmap);
+                            Manager.getInstance().compareFacesPhotos(facialImages1, facialImages2, new FaceCompareCallback() {
+                                @Override
+                                public void success(FaceCompareModel faceCompareModel) {
+                                    double score = faceCompareModel.getFirstLiveliness();
+
+                                }
+
+                                @Override
+                                public void failure(VolleyError volleyError) {
+
+                                }
+                            });
+                        } catch (InternalException e) {
+                            e.printStackTrace();
+                        } catch (ConnectException e) {
+                            e.printStackTrace();
+                        } catch (SessionException e) {
+                            e.printStackTrace();
+                        }*/
+
                         voiceAuthType();
                     }).show();
         }
     }
+
     private void createSessionUsingVoice() throws ConnectException, InternalException {
-       progressDialog = Spinner.showSpinner(this);
-        Manager.getInstance().createSession(getDeviceIMEI(this)+String.valueOf(Globals.UserID), getApplicationContext(), session -> {
-           hideSpinner();
-            if (!isActive) {
-                return;
-            }
-            Log.i("SESSION", "session id: " + session.getSessionId());
-            Log.i("SESSION", "session face status: " + session.getFaceStatus());
-            Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
-            Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
-            if (session.getVoiceStatus() == SessionModel.BUILDING) {
-                new AlertDialog.Builder(RegisterActivity.this)
-                        .setTitle("Voice detection unavailable")
-                        .setMessage("Generating template. Please try again in a few seconds")
-                        .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        })
-                        .show();
-            } else if (session.getVoiceStatus() == SessionModel.ENROLLED) {
-                authenticateWithVoice();
-            } else if (session.getVoiceStatus() == SessionModel.NOT_ENROLLED) {
-                showVoiceEnrollmentDialog();
-            }
-        }, new AMBNResponseErrorListener() {
+        progressDialog = Spinner.showSpinner(this);
+        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+                    hideSpinner();
+                    if (!isActive) {
+                        return;
+                    }
+                    Log.i("SESSION", "session id: " + session.getSessionId());
+                    Log.i("SESSION", "session face status: " + session.getFaceStatus());
+                    Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
+                    Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
+                    if (session.getVoiceStatus() == SessionModel.BUILDING) {
+                        new AlertDialog.Builder(RegisterActivity.this)
+                                .setTitle("Voice detection unavailable")
+                                .setMessage("Generating template. Please try again in a few seconds")
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                })
+                                .show();
+                    } else if (session.getVoiceStatus() == SessionModel.ENROLLED) {
+                        authenticateWithVoice();
+                    } else if (session.getVoiceStatus() == SessionModel.NOT_ENROLLED) {
+                        showVoiceEnrollmentDialog();
+                    }
+                }, new AMBNResponseErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         hideSpinner();
-                       // errorTextView.setText(getErrorMessage(error));
+                        // errorTextView.setText(getErrorMessage(error));
                         new AlertDialog.Builder(RegisterActivity.this)
                                 .setTitle("Voice detection unavailable")
                                 .setMessage(error.getMessage())
@@ -446,6 +553,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
         );
     }
+
     private void showVoiceEnrollmentDialog() {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setMessage("Please enroll  before using Voice authentication")
@@ -456,19 +564,25 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 }).setNegativeButton("Cancel", (dialog, which) -> hideSpinner()).setCancelable(false).show();
     }
+
     private void enrollWithVoice() {
         if (voiceTriesAmount < 1) {
             VoiceTokenType tokenType = VoiceTokenType.ENROLL1;
             switch (voiceTriesAmount) {
-                case 0: tokenType = VoiceTokenType.ENROLL1;
+                case 0:
+                    tokenType = VoiceTokenType.ENROLL1;
                     break;
-                case 1: tokenType = VoiceTokenType.ENROLL2;
+                case 1:
+                    tokenType = VoiceTokenType.ENROLL2;
                     break;
-                case 2: tokenType = VoiceTokenType.ENROLL3;
+                case 2:
+                    tokenType = VoiceTokenType.ENROLL3;
                     break;
-                case 3: tokenType = VoiceTokenType.ENROLL4;
+                case 3:
+                    tokenType = VoiceTokenType.ENROLL4;
                     break;
-                case 4: tokenType = VoiceTokenType.ENROLL5;
+                case 4:
+                    tokenType = VoiceTokenType.ENROLL5;
                     break;
             }
 
@@ -476,7 +590,7 @@ public class RegisterActivity extends AppCompatActivity {
             try {
                 //progressDialog = Spinner.showSpinner(this);
                 Manager.getInstance().getVoiceToken(tokenType, tokenModel -> {
-                   hideSpinner();
+                    hideSpinner();
                     if (!isActive) {
                         return;
                     }
@@ -486,9 +600,8 @@ public class RegisterActivity extends AppCompatActivity {
             } catch (InternalException | SessionException | ConnectException e) {
                 Log.e("signingActivity", "voiceEnroll", e);
             }
-        }
-        else {
-           hideSpinner();
+        } else {
+            hideSpinner();
             new AlertDialog.Builder(RegisterActivity.this)
                     .setMessage("Voice Enrollment finished successfully we will transfer you to login screen")
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -504,13 +617,14 @@ public class RegisterActivity extends AppCompatActivity {
                     }).show();
         }
     }
+
     private void authenticateWithVoice() {
         try {
-           progressDialog = Spinner.showSpinner(this);
+            progressDialog = Spinner.showSpinner(this);
             Manager.getInstance().getVoiceToken(VoiceTokenType.AUTH, new VoiceTokenCallback() {
                 @Override
                 public void success(VoiceTokenModel tokenModel) {
-                  hideSpinner();
+                    hideSpinner();
                     if (!isActive) {
                         return;
                     }
@@ -521,12 +635,14 @@ public class RegisterActivity extends AppCompatActivity {
             Log.e("signingActivity", "voiceEnroll", e);
         }
     }
+
     private void openVoiceCaptureActivity(int requestCode, String upperText, String recordingToken) {
         Intent intent = new Intent(this, VoiceCaptureActivity.class);
         intent.putExtra(VoiceCaptureActivity.EXTRA_UPPER_TEXT, upperText);
         intent.putExtra(VoiceCaptureActivity.EXTRA_RECORDING_HINT, recordingToken);
         startActivityForResult(intent, requestCode);
     }
+
     private void showRetryVoiceAuthDialog(String message) {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setMessage(message)
@@ -534,11 +650,12 @@ public class RegisterActivity extends AppCompatActivity {
                     try {
                         createSessionUsingVoice();
                     } catch (ConnectException | InternalException e) {
-                       hideSpinner();
-                       // errorTextView.setText(e.getMessage());
+                        hideSpinner();
+                        // errorTextView.setText(e.getMessage());
                     }
                 }).setNegativeButton("Cancel", (dialog, which) -> hideSpinner()).setCancelable(false).show();
     }
+
     private void showRetryPhotosEnrollmentDialog(String message) {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setTitle("Error")
@@ -554,6 +671,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }).setCancelable(false).show();
     }
+
     private void showRetryVoiceEnrollmentDialog(String message) {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setTitle("Error")
@@ -569,6 +687,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }).setCancelable(false).show();
     }
+
     private String getErrorMessage(VolleyError error) {
         String json = null;
         String errorMessage = null;
@@ -591,6 +710,7 @@ public class RegisterActivity extends AppCompatActivity {
         else
             return "Unable to connect to server. Please check network settings.";
     }
+
     private void showRetryPhotosAuthDialog(String message) {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setMessage(message)
@@ -599,12 +719,13 @@ public class RegisterActivity extends AppCompatActivity {
                         try {
                             createSessionUsingPhoto();
                         } catch (ConnectException | InternalException e) {
-                           hideSpinner();
-                          //  errorTextView.setText(e.getMessage());
+                            hideSpinner();
+                            //  errorTextView.setText(e.getMessage());
                         }
                     }
                 }).setNegativeButton("Cancel", (dialog, which) -> hideSpinner()).setCancelable(false).show();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -638,7 +759,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         @Override
                         public void failure(VolleyError volleyError) {
-                              hideSpinner();
+                            hideSpinner();
                             if (!isActive) {
                                 return;
                             }
@@ -666,8 +787,8 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!isActive) {
                                 return;
                             }
-                            if (faceAuthenticateModel.getScore() >= 0.5) {
-                                if (faceAuthenticateModel.getLiveliness() >= 0.5) {
+                            if (faceAuthenticateModel.getScore() >= 0.3) {
+                                if (faceAuthenticateModel.getLiveliness() >= 0.3) {
                                     // startDemoBankActivity();
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Face detection succeeded")
@@ -722,7 +843,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         @Override
                         public void failure(VolleyError volleyError) {
-                              hideSpinner();
+                            hideSpinner();
                             if (!isActive) {
                                 return;
                             }
@@ -746,7 +867,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Manager.getInstance().sendProvidedVoiceCapturesToAuthenticate(VoiceCaptureActivity.audio, new VoiceCapturesAuthenticateCallback() {
                         @Override
                         public void success(VoiceAuthenticateModel voiceAuthenticateModel) {
-                              hideSpinner();
+                            hideSpinner();
                             if (!isActive) {
                                 return;
                             }
@@ -755,7 +876,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     // startDemoBankActivity();
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage("Welcome To the app Mr/Mss : "+ Globals.extractedData.get(1).getValue())
+                                            .setMessage("Welcome To the app Mr/Mss : " + Globals.extractedData.get(1).getValue())
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 voiceAuthType();
                                             })
@@ -787,11 +908,13 @@ public class RegisterActivity extends AppCompatActivity {
                 break;
         }
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         sendCollectedData();
     }
+
     private void sendCollectedData() {
         try {
             Manager.getInstance().submitCollectedData(new ScoreCallback() {
@@ -805,17 +928,16 @@ public class RegisterActivity extends AppCompatActivity {
             Log.e("signingActivity", "submitCollectedData", e);
         }
     }
-    List<RecognitionResultEntry> DataList ;
+
+    List<RecognitionResultEntry> DataList;
     public BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getStringExtra("action");
             DataList = deserializeFromJson(action);
             Globals.extractedData = DataList;
-            Globals.UserID = Globals.UserID+1;
+            Globals.UserID = Globals.UserID + 1;
             faceEnrollButtonClick();
-
-
         }
     };
 
@@ -835,6 +957,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return deviceUniqueIdentifier;
     }
+
     public void hideSpinner() {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();

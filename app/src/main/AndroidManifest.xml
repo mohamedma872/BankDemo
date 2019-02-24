@@ -46,6 +46,7 @@
         <activity android:name="com.aimbrain.sdk.faceCapture.PhotoFaceCaptureActivity"/>
         <activity android:name="com.aimbrain.sdk.faceCapture.VideoFaceCaptureActivity"/>
         <activity android:name="com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity"/>
+        <activity android:name=".ui.HomeActivity" />
 
     </application>
 </manifest>

@@ -1,0 +1,37 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 28
+        versionCode 19
+        versionName "v0.6.13"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    libraryVariants.all { variant ->
+        variant.outputs.each { output ->
+            def outputFile = output.outputFile
+            if (outputFile != null && outputFile.name.endsWith('.aar')) {
+                def fileName = "${archivesBaseName}-sdk-${defaultConfig.versionName}.aar"
+                output.outputFileName = new File("./../../../../../build/", fileName)
+            }
+        }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.mcxiaoke.volley:library:1.0.19'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.json:json:20160810'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+}

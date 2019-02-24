@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:screenOrientation="portrait"
+    tools:context="com.aimbrain.sdk.faceCapture.fragments.Camera2Fragment">
+
+    <com.aimbrain.sdk.faceCapture.views.FixedAspectTextureView
+        android:id="@+id/texture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.aimbrain.sdk.faceCapture.views.FaceFinderView
+        android:id="@+id/finder_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
