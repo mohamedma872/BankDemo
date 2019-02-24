@@ -21,7 +21,7 @@
         android:glEsVersion="0x00020000"
         android:required="false" />
     <application
-        tools:replace="android:supportsRtl"
+        tools:replace="android:supportsRtl,android:allowBackup"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -29,6 +29,8 @@
         android:supportsRtl="false"
         android:name=".ui.MyApplication"
         android:theme="@style/AppTheme" >
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
         <activity android:name="com.android.demo.ui.RegisterActivity" />
         <activity android:name="com.android.demo.ui.LoginActivity" />
         <activity android:name="com.android.demo.ui.SplashActivity" >
@@ -41,5 +43,9 @@
         <activity
             android:name="com.microblink.activity.DocumentVerificationActivity"
             />
+        <activity android:name="com.aimbrain.sdk.faceCapture.PhotoFaceCaptureActivity"/>
+        <activity android:name="com.aimbrain.sdk.faceCapture.VideoFaceCaptureActivity"/>
+        <activity android:name="com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity"/>
+
     </application>
 </manifest>

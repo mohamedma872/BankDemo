@@ -1,1 +1,1 @@
-include ':app', ':LibBlinkID', ':LibUtils', ':aimbrain', ':aimbrain-sdk-v0.6.13'
+include ':app', ':LibBlinkID', ':LibUtils', ':aimbrain'
