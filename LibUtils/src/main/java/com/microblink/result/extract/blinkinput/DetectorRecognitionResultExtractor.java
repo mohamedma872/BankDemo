@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkinput;
 
 import com.microblink.entities.recognizers.detector.DetectorRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 
 public class DetectorRecognitionResultExtractor extends BaseResultExtractor<DetectorRecognizer.Result, DetectorRecognizer> {

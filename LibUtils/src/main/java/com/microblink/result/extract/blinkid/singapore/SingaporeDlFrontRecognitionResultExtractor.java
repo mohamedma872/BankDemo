@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.singapore;
 
 import com.microblink.entities.recognizers.blinkid.singapore.SingaporeDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class SingaporeDlFrontRecognitionResultExtractor extends BlinkIdExtractor<SingaporeDlFrontRecognizer.Result, SingaporeDlFrontRecognizer> {

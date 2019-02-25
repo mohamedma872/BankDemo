@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.mexico;
 
 import com.microblink.entities.recognizers.blinkid.mexico.MexicoVoterIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class MexicoVoterIdFrontRecognitionResultExtractor extends BlinkIdExtractor<MexicoVoterIdFrontRecognizer.Result, MexicoVoterIdFrontRecognizer> {

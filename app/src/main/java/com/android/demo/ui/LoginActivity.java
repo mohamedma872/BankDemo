@@ -51,6 +51,8 @@ import com.aimbrain.sdk.server.VoiceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.VoiceTokenCallback;
 import com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity;
 import com.android.demo.R;
+import com.android.demo.result.ResultActivity;
+import com.android.demo.result.extract.RecognitionResultEntry;
 import com.android.demo.score.ScoreManager;
 import com.android.demo.utils.Globals;
 import com.android.demo.utils.Spinner;
@@ -60,9 +62,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
-import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
-import com.microblink.result.ResultActivity;
-import com.microblink.result.extract.RecognitionResultEntry;
+
 import com.microblink.uisettings.ActivityRunner;
 import com.microblink.uisettings.BaseScanUISettings;
 import com.microblink.uisettings.DocumentUISettings;
@@ -71,7 +71,6 @@ import com.microblink.uisettings.options.BeepSoundUIOptions;
 import com.microblink.uisettings.options.HelpIntentUIOptions;
 import com.microblink.uisettings.options.OcrResultDisplayMode;
 import com.microblink.uisettings.options.OcrResultDisplayUIOptions;
-import com.microblink.util.ImageSettings;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,22 +156,6 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void scanAction(@NonNull UISettings activitySettings, @Nullable Intent helpIntent) {
-        setupActivitySettings(activitySettings, helpIntent);
-        ActivityRunner.startActivityForResult(this, MY_BLINKID_REQUEST_CODE, activitySettings);
-    }
-
-    /**
-     * Starts scan activity. Activity that will be used is determined by the passed activity settings.
-     * UI options are configured inside this method.
-     *
-     * @param activitySettings activity settings that will be used for scanning, only recognizers are
-     *                         important, UI options will be configured inside this method.
-     */
-    private void scanAction(@NonNull UISettings activitySettings) {
-        scanAction(activitySettings, null);
-    }
-
     private void setupActivitySettings(@NonNull UISettings settings, @Nullable Intent helpIntent) {
         if (settings instanceof BeepSoundUIOptions) {
             // optionally, if you want the beep sound to be played after a scan
@@ -240,7 +223,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(myReceiver);
+
     }
 
     // Deserialize to single object.
@@ -251,7 +234,6 @@ public class LoginActivity extends AppCompatActivity {
         lst = new ArrayList<>(lst);
         return lst;
     }
-
     public void faceEnrollButtonClick() {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
@@ -275,7 +257,7 @@ public class LoginActivity extends AppCompatActivity {
                         } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
 
                         } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
-                            SendCaptureImage();
+
                         }
                     }, new AMBNResponseErrorListener() {
                         @Override
@@ -297,36 +279,6 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-    }
-
-    private void SendCaptureImage() {
-        progressDialog = Spinner.showSpinner(this);
-        List<Bitmap> lst = new ArrayList<>();
-        lst.add(DataList.get(2).getImageValue());
-        try {
-            Manager.getInstance().sendProvidedFaceCapturesToEnroll(lst, new FaceCapturesEnrollCallback() {
-                @Override
-                public void success(FaceEnrollModel faceEnrollModel) {
-                    hideSpinner();
-                    faceAuthType();
-                }
-
-                @Override
-                public void failure(VolleyError volleyError) {
-                    hideSpinner();
-                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason: " + getErrorMessage(volleyError));
-                }
-            });
-        } catch (InternalException e) {
-            hideSpinner();
-            e.printStackTrace();
-        } catch (ConnectException e) {
-            hideSpinner();
-            e.printStackTrace();
-        } catch (SessionException e) {
-            hideSpinner();
-            e.printStackTrace();
-        }
     }
 
     private void faceAuthType() {
@@ -515,15 +467,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case MY_BLINKID_REQUEST_CODE:
-                if (requestCode == MY_BLINKID_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-                    startResultActivity(data);
-                } else {
-                    // if BlinkID activity did not return result, user has probably
-                    // pressed Back button and cancelled scanning
-                    Toast.makeText(this, "Scan cancelled!", Toast.LENGTH_SHORT).show();
-                }
-                break;
+
             case enrollmentRequestcode:
                 if (resultCode != RESULT_OK) {
                     return;
@@ -622,34 +566,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        sendCollectedData();
-    }
 
-    private void sendCollectedData() {
-        try {
-            Manager.getInstance().submitCollectedData(new ScoreCallback() {
-                @Override
-                public void success(ScoreModel scoreModel) {
-                    Log.i("DATA SENT", "and collected");
-                    ScoreManager.getInstance().scoreChanged(scoreModel, System.currentTimeMillis());
-                }
-            });
-        } catch (InternalException | ConnectException | SessionException e) {
-            Log.e("signingActivity", "submitCollectedData", e);
-        }
     }
-
-    List<RecognitionResultEntry> DataList;
-    public BroadcastReceiver myReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getStringExtra("action");
-            DataList = deserializeFromJson(action);
-            Globals.extractedData = DataList;
-            Globals.UserID = Globals.UserID + 1;
-            faceEnrollButtonClick();
-        }
-    };
 
     public static String getDeviceIMEI(Context ctx) {
         String deviceUniqueIdentifier = null;

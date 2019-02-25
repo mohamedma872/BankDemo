@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
 
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.locale.LanguageUtils;
 import com.microblink.result.extract.RecognitionResultEntry;
 

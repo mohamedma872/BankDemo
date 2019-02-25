@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.switzerland;
 
 import com.microblink.entities.recognizers.blinkid.switzerland.SwitzerlandIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class SwissIDFrontSideRecognitionResultExtractor extends BlinkIdExtractor<SwitzerlandIdFrontRecognizer.Result, SwitzerlandIdFrontRecognizer> {

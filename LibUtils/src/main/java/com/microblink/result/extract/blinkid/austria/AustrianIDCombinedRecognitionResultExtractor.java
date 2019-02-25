@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.austria;
 
 import com.microblink.entities.recognizers.blinkid.austria.AustriaCombinedRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class AustrianIDCombinedRecognitionResultExtractor extends BlinkIdExtractor<AustriaCombinedRecognizer.Result,AustriaCombinedRecognizer> {

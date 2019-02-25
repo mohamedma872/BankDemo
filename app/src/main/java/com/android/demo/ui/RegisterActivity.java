@@ -13,7 +13,6 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -21,8 +20,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -30,12 +29,9 @@ import android.widget.Toast;
 import com.aimbrain.sdk.Manager;
 import com.aimbrain.sdk.exceptions.InternalException;
 import com.aimbrain.sdk.exceptions.SessionException;
-import com.aimbrain.sdk.faceCapture.FaceCaptureActivity;
 import com.aimbrain.sdk.faceCapture.VideoFaceCaptureActivity;
 import com.aimbrain.sdk.models.FaceAuthenticateModel;
-import com.aimbrain.sdk.models.FaceCompareModel;
 import com.aimbrain.sdk.models.FaceEnrollModel;
-import com.aimbrain.sdk.models.FaceTokenModel;
 import com.aimbrain.sdk.models.FaceTokenType;
 import com.aimbrain.sdk.models.ScoreModel;
 import com.aimbrain.sdk.models.SessionModel;
@@ -46,17 +42,18 @@ import com.aimbrain.sdk.models.VoiceTokenType;
 import com.aimbrain.sdk.server.AMBNResponseErrorListener;
 import com.aimbrain.sdk.server.FaceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.FaceCapturesEnrollCallback;
-import com.aimbrain.sdk.server.FaceCompareCallback;
-import com.aimbrain.sdk.server.FaceTokenCallback;
 import com.aimbrain.sdk.server.ScoreCallback;
-import com.aimbrain.sdk.server.SessionCallback;
 import com.aimbrain.sdk.server.VoiceCaptureEnrollCallback;
 import com.aimbrain.sdk.server.VoiceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.VoiceTokenCallback;
 import com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity;
 import com.android.demo.R;
+import com.android.demo.result.ResultActivity;
+import com.android.demo.result.extract.RecognitionResultEntry;
 import com.android.demo.score.ScoreManager;
+import com.android.demo.utils.ImageSettings;
 import com.android.demo.utils.Globals;
+import com.android.demo.utils.SessionManager;
 import com.android.demo.utils.Spinner;
 import com.android.volley.NetworkResponse;
 import com.android.volley.TimeoutError;
@@ -67,8 +64,6 @@ import com.microblink.entities.recognizers.RecognizerBundle;
 import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdBackRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdFrontRecognizer;
-import com.microblink.result.ResultActivity;
-import com.microblink.result.extract.RecognitionResultEntry;
 import com.microblink.uisettings.ActivityRunner;
 import com.microblink.uisettings.BaseScanUISettings;
 import com.microblink.uisettings.DocumentUISettings;
@@ -77,7 +72,6 @@ import com.microblink.uisettings.options.BeepSoundUIOptions;
 import com.microblink.uisettings.options.HelpIntentUIOptions;
 import com.microblink.uisettings.options.OcrResultDisplayMode;
 import com.microblink.uisettings.options.OcrResultDisplayUIOptions;
-import com.microblink.util.ImageSettings;
 import com.microblink.util.RecognizerCompatibility;
 import com.microblink.util.RecognizerCompatibilityStatus;
 
@@ -136,6 +130,8 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        //CalculteBitmap();
+        sessionmanager = new SessionManager(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         ButterKnife.bind(this);
         registerReceiver(myReceiver, new IntentFilter("FBR-IMAGE"));
@@ -216,13 +212,13 @@ public class RegisterActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan:
-                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
+               UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
                 ImageSettings.enableAllImages(uaeFront);
                 UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
                 ImageSettings.enableAllImages(uaeBack);
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
-/*
-                EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
+
+             /*   EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
                 ImageSettings.enableAllImages(egyptFront);
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));*/
                 break;
@@ -323,7 +319,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void SendCaptureImage() {
         progressDialog = Spinner.showSpinner(this);
         List<Bitmap> lst = new ArrayList<>();
-        lst.add(DataList.get(3).getImageValue());
+        lst.add(Globals.extractedData.get(3).getImageValue());
         try {
             Manager.getInstance().sendProvidedFaceCapturesToEnroll(lst, new FaceCapturesEnrollCallback() {
                 @Override
@@ -912,7 +908,7 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        sendCollectedData();
+//        sendCollectedData();
     }
 
     private void sendCollectedData() {
@@ -929,14 +925,14 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    List<RecognitionResultEntry> DataList;
+    SessionManager sessionmanager;
+   // List<RecognitionResultEntry> DataList;
     public BroadcastReceiver myReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getStringExtra("action");
-            DataList = deserializeFromJson(action);
-            Globals.extractedData = DataList;
-            Globals.UserID = Globals.UserID + 1;
+
+            sessionmanager.SaveToken(sessionmanager.getToken()+1);
+            Globals.UserID = sessionmanager.getToken();
             faceEnrollButtonClick();
         }
     };
@@ -964,4 +960,25 @@ public class RegisterActivity extends AppCompatActivity {
             progressDialog = null;
         }
     }
+    private LruCache<String, Bitmap> mMemoryCache;
+
+   /* private void CalculteBitmap() {
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+// Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }*/
 }

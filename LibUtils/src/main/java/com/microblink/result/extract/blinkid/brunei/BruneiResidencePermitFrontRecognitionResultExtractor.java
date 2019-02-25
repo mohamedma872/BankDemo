@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.brunei;
 
 import com.microblink.entities.recognizers.blinkid.brunei.BruneiResidencePermitFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class BruneiResidencePermitFrontRecognitionResultExtractor extends BlinkIdExtractor<BruneiResidencePermitFrontRecognizer.Result, BruneiResidencePermitFrontRecognizer> {

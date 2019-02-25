@@ -3,7 +3,7 @@ package com.microblink.result.extract.blinkid;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.blinkid.mrtd.MrtdDocumentType;
 import com.microblink.entities.recognizers.blinkid.mrtd.MrzResult;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 
 public abstract class BlinkIdExtractor<ResultType extends Recognizer.Result, RecognizerType extends Recognizer<?, ResultType>> extends BaseResultExtractor<ResultType, RecognizerType> {

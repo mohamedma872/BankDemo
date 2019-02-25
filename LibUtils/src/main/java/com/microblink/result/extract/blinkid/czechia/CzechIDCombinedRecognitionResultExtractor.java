@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.czechia;
 
 import com.microblink.entities.recognizers.blinkid.czechia.CzechiaCombinedRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class CzechIDCombinedRecognitionResultExtractor extends BlinkIdExtractor<CzechiaCombinedRecognizer.Result, CzechiaCombinedRecognizer> {

@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.morocco;
 
 import com.microblink.entities.recognizers.blinkid.morocco.MoroccoIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class MoroccoIdFrontRecognitionResultExtractor extends BlinkIdExtractor<MoroccoIdFrontRecognizer.Result, MoroccoIdFrontRecognizer> {

@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import com.microblink.hardware.orientation.Orientation;
 import com.microblink.image.Image;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.results.date.Date;
 import com.microblink.results.date.DateResult;
 

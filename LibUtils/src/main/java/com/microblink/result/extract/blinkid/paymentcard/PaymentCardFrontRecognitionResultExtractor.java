@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.paymentcard;
 
 import com.microblink.entities.recognizers.blinkid.paymentcard.PaymentCardFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class PaymentCardFrontRecognitionResultExtractor extends BlinkIdExtractor<PaymentCardFrontRecognizer.Result, PaymentCardFrontRecognizer> {

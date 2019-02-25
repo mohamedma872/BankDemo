@@ -23,7 +23,11 @@ dependencies {
         transitive = true
     }
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation project(':LibBlinkID')
+  //  implementation project(path:':sharedmodule', configuration: 'default')
+    // implementation project(':sharedmodule')
+    // implementation project(':sharedmodule')
     // uncomment this to use custom LibBlinkID build
-//    implementation project(':LibBlinkID')
-//    implementation "com.android.support:appcompat-v7:${rootProject.ext.appCompatVersion}"
+    //    implementation project(':LibBlinkID')
+    //    implementation "com.android.support:appcompat-v7:${rootProject.ext.appCompatVersion}"
 }

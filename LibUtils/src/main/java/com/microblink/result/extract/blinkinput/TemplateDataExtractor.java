@@ -10,7 +10,7 @@ import com.microblink.entities.recognizers.templating.ProcessorGroup;
 import com.microblink.entities.recognizers.templating.TemplatingClass;
 import com.microblink.entities.recognizers.templating.TemplatingRecognizer;
 import com.microblink.image.Image;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.RecognitionResultEntry;
 
 import java.util.ArrayList;

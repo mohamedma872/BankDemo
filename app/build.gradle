@@ -4,10 +4,10 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.android.demo"
-        minSdkVersion 23
+        minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "2.0"
+        versionCode 5
+        versionName "5.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -58,7 +58,7 @@ dependencies {
     implementation('com.microblink:blinkid:4.6.0@aar') {
         transitive = true
     }
-    implementation project(':LibUtils')
+   // implementation project(':LibUtils')
     implementation project(':aimbrain')
     //gson
     implementation 'com.google.code.gson:gson:2.8.5'

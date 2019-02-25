@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.cyprus;
 
 import com.microblink.entities.recognizers.blinkid.cyprus.CyprusIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class CyprusIdFrontRecognitionResultExtractor extends BlinkIdExtractor<CyprusIdFrontRecognizer.Result, CyprusIdFrontRecognizer > {

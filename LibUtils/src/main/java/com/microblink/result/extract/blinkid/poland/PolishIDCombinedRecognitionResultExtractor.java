@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.poland;
 
 import com.microblink.entities.recognizers.blinkid.poland.PolandCombinedRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class PolishIDCombinedRecognitionResultExtractor extends BlinkIdExtractor<PolandCombinedRecognizer.Result, PolandCombinedRecognizer> {

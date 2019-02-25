@@ -28,10 +28,9 @@ import android.widget.Toast;
 import com.aimbrain.sdk.Manager;
 import com.aimbrain.sdk.exceptions.InternalException;
 import com.aimbrain.sdk.exceptions.SessionException;
+
 import com.aimbrain.sdk.faceCapture.VideoFaceCaptureActivity;
 import com.aimbrain.sdk.models.FaceAuthenticateModel;
-import com.aimbrain.sdk.models.FaceCompareModel;
-import com.aimbrain.sdk.models.FaceEnrollModel;
 import com.aimbrain.sdk.models.FaceTokenType;
 import com.aimbrain.sdk.models.ScoreModel;
 import com.aimbrain.sdk.models.SessionModel;
@@ -41,8 +40,6 @@ import com.aimbrain.sdk.models.VoiceTokenModel;
 import com.aimbrain.sdk.models.VoiceTokenType;
 import com.aimbrain.sdk.server.AMBNResponseErrorListener;
 import com.aimbrain.sdk.server.FaceCapturesAuthenticateCallback;
-import com.aimbrain.sdk.server.FaceCapturesEnrollCallback;
-import com.aimbrain.sdk.server.FaceCompareCallback;
 import com.aimbrain.sdk.server.ScoreCallback;
 import com.aimbrain.sdk.server.VoiceCaptureEnrollCallback;
 import com.aimbrain.sdk.server.VoiceCapturesAuthenticateCallback;
@@ -55,33 +52,13 @@ import com.android.demo.utils.Spinner;
 import com.android.volley.NetworkResponse;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.microblink.entities.recognizers.Recognizer;
-import com.microblink.entities.recognizers.RecognizerBundle;
-import com.microblink.result.ResultActivity;
-import com.microblink.result.extract.RecognitionResultEntry;
-import com.microblink.uisettings.ActivityRunner;
-import com.microblink.uisettings.BaseScanUISettings;
-import com.microblink.uisettings.UISettings;
-import com.microblink.uisettings.options.BeepSoundUIOptions;
-import com.microblink.uisettings.options.HelpIntentUIOptions;
-import com.microblink.uisettings.options.OcrResultDisplayMode;
-import com.microblink.uisettings.options.OcrResultDisplayUIOptions;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeActivity extends AppCompatActivity {
-
 
     private static final int authenticationRequestcode = 1543;
     private static final int voiceEnrollmentRequestcode = 1544;
@@ -147,9 +124,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -193,8 +167,6 @@ public class HomeActivity extends AppCompatActivity {
             hideSpinner();
         }).setCancelable(false).show();
     }
-
-
 
     private void createSessionUsingVoice() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
@@ -328,16 +300,10 @@ public class HomeActivity extends AppCompatActivity {
         new AlertDialog.Builder(HomeActivity.this)
                 .setMessage(message)
                 .setPositiveButton("Retry", (dialog, which) -> {
-                    try {
-                        createSessionUsingVoice();
-                    } catch (ConnectException | InternalException e) {
-                        hideSpinner();
-                        // errorTextView.setText(e.getMessage());
-                    }
+                    faceAuthType();
+                    // createSessionUsingVoice();
                 }).setNegativeButton("Cancel", (dialog, which) -> hideSpinner()).setCancelable(false).show();
     }
-
-
 
     private void showRetryVoiceEnrollmentDialog(String message) {
         new AlertDialog.Builder(HomeActivity.this)
@@ -377,7 +343,6 @@ public class HomeActivity extends AppCompatActivity {
         else
             return "Unable to connect to server. Please check network settings.";
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -436,9 +401,18 @@ public class HomeActivity extends AppCompatActivity {
                             if (voiceAuthenticateModel.getScore() >= 0.5) {
                                 if (voiceAuthenticateModel.getLiveliness() >= 0.5) {
                                     // startDemoBankActivity();
+                                    String Customername="";
+                                    if( Globals.extractedData!=null)
+                                    {
+                                        Customername = ": "+Globals.extractedData.get(1).getValue();
+                                    }else
+                                    {
+                                        Customername = "";
+                                    }
+
                                     new AlertDialog.Builder(HomeActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage("Welcome To the app Mr/Mss : " + Globals.extractedData.get(1).getValue())
+                                            .setMessage("Welcome To the app Mr/Mss " +Customername)
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
 
                                             })
@@ -457,7 +431,7 @@ public class HomeActivity extends AppCompatActivity {
                             if (!isActive) {
                                 return;
                             }
-                            // showRetryVoiceAuthDialog("Please retry again, reason: " + getErrorMessage(volleyError));
+                             showRetryVoiceAuthDialog("Please retry again, reason: " + getErrorMessage(volleyError));
                         }
                     });
                 } catch (ConnectException | InternalException e) {
@@ -466,6 +440,58 @@ public class HomeActivity extends AppCompatActivity {
                 } catch (SessionException e) {
                     hideSpinner();
                     Log.e("signingActivity", "sendProvidedVoiceCapturesToAuthenticate", e);
+                }
+                break;
+            case authenticationRequestcode:
+                if (resultCode != RESULT_OK) {
+                    return;
+                }
+                try {
+                    progressDialog = Spinner.showSpinner(this);
+                    Manager.getInstance().sendProvidedFaceCapturesToAuthenticate(VideoFaceCaptureActivity.video, new FaceCapturesAuthenticateCallback() {
+                        @Override
+                        public void success(FaceAuthenticateModel faceAuthenticateModel) {
+                            hideSpinner();
+                            if (!isActive) {
+                                return;
+                            }
+                            if (faceAuthenticateModel.getScore() >= 0.3) {
+                                if (faceAuthenticateModel.getLiveliness() >= 0.3) {
+
+                                    new AlertDialog.Builder(HomeActivity.this)
+                                            .setTitle("Face detection succeeded")
+                                            .setMessage("now we will authenticate voice Again")
+                                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                                // user is not logged in redirect him to Login Activity
+                                                voiceAuthType();
+                                            })
+                                            .show();
+
+
+
+                                } else {
+                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
+                                }
+                            } else {
+                                showRetryPhotosAuthDialog("Access denied your face not matched");
+                            }
+                        }
+
+                        @Override
+                        public void failure(VolleyError volleyError) {
+                            hideSpinner();
+                            if (!isActive) {
+                                return;
+                            }
+                            showRetryPhotosAuthDialog("Please re-take the picutre, reason: " + getErrorMessage(volleyError));
+                        }
+                    });
+                } catch (ConnectException | InternalException e) {
+                    hideSpinner();
+                    showRetryPhotosAuthDialog(e.getMessage());
+                } catch (SessionException e) {
+                    hideSpinner();
+                    Log.e("signingActivity", "sendProvidedFaceCapturesToAuthenticate", e);
                 }
                 break;
         }
@@ -491,8 +517,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
-
     public static String getDeviceIMEI(Context ctx) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
@@ -515,5 +539,131 @@ public class HomeActivity extends AppCompatActivity {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+     /*Face*/
+     private static final int enrollmentRequestcode = 1542;
+
+    private void faceAuthType() {
+        try {
+            createSessionUsingPhoto();
+        } catch (ConnectException | InternalException e) {
+            hideSpinner();
+            // errorTextView.setText(e.getMessage());
+            new AlertDialog.Builder(HomeActivity.this)
+                    .setTitle("Face Auth unavailable")
+                    .setMessage(e.getMessage())
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                    })
+                    .show();
+        }
+    }
+    private void createSessionUsingPhoto() throws ConnectException, InternalException {
+        progressDialog = Spinner.showSpinner(this);
+        ScoreManager.getInstance().clearCache();
+        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+                    hideSpinner();
+                    if (!isActive) {
+                        return;
+                    }
+                    Log.i("SESSION", "session id: " + session.getSessionId());
+                    Log.i("SESSION", "session face status: " + session.getFaceStatus());
+                    Log.i("SESSION", "session behaviour status: " + session.getBehaviourStatus());
+                    Log.i("SESSION", "session voice status: " + session.getVoiceStatus());
+                    if (session.getFaceStatus() == SessionModel.BUILDING) {
+                        new AlertDialog.Builder(HomeActivity.this)
+                                .setTitle("Face detection unavailable")
+                                .setMessage("Generating template. Please try again in a few seconds")
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                })
+                                .show();
+                    } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
+                        authenticateWithPhotos();
+                    } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
+                        showEnrollmentDialog();
+                    }
+                }, new AMBNResponseErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        hideSpinner();
+                        //errorTextView.setText(getErrorMessage(error));
+                        new AlertDialog.Builder(HomeActivity.this)
+                                .setTitle("Face detection unavailable")
+                                .setMessage(error.getMessage())
+                                .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                })
+                                .show();
+                    }
+                }
+        );
+
+    }
+    private void authenticateWithPhotos() {
+        openFaceImageCaptureActivity(authenticationRequestcode, photoAuthUpperText, photoLowerText, faceAuthenticationHint);
+    }
+    private void openFaceImageCaptureActivity(int requestCode, String upperText, String lowerText) {
+        openFaceImageCaptureActivity(requestCode, upperText, lowerText, null);
+    }
+    private void openFaceImageCaptureActivity(int requestCode, String upperText, String lowerText, String recordingHint) {
+
+        try {
+            progressDialog = Spinner.showSpinner(this);
+            Manager.getInstance().getFaceToken(FaceTokenType.AUTH, tokenModel -> {
+                hideSpinner();
+                String token = tokenModel.getToken();
+                // use token, e.g. present video recording activity with token
+                Intent intent = new Intent(HomeActivity.this, VideoFaceCaptureActivity.class);
+                intent.putExtra(VideoFaceCaptureActivity.EXTRA_UPPER_TEXT, upperText);
+                intent.putExtra(VideoFaceCaptureActivity.EXTRA_LOWER_TEXT, lowerText);
+                intent.putExtra(VideoFaceCaptureActivity.EXTRA_DURATION_MILLIS, 2000);
+                intent.putExtra(VideoFaceCaptureActivity.EXTRA_RECORDING_TOKEN_HINT, token);
+                startActivityForResult(intent, requestCode);
+
+            });
+        } catch (InternalException e) {
+            e.printStackTrace();
+            hideSpinner();
+        } catch (SessionException e) {
+            e.printStackTrace();
+            hideSpinner();
+        } catch (ConnectException e) {
+            e.printStackTrace();
+            hideSpinner();
+        }
+
+
+    }
+    private void enrollWithPhotos() {
+        if (triesAmount < 1) {
+            openFaceImageCaptureActivity(enrollmentRequestcode, faceEnrollStepsTexts[triesAmount], photoLowerText);
+        } else {
+            hideSpinner();
+            this.video = VideoFaceCaptureActivity.video;
+            new AlertDialog.Builder(HomeActivity.this)
+                    .setMessage("Video Authentication Matched successfully when you press ok we will open Home Page")
+                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+
+                        // user is not logged in redirect him to Login Activity
+                        Intent i = new Intent(this, HomeActivity.class);
+                        // Closing all the Activities
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        // Add new Flag to start new Activity
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        // Staring Register Activity
+                        startActivity(i);
+                        // voiceAuthType();
+                    }).show();
+        }
+    }
+    private void showRetryPhotosAuthDialog(String message) {
+        new AlertDialog.Builder(HomeActivity.this)
+                .setMessage(message)
+                .setPositiveButton("Retry", (dialog, which) -> {
+                    try {
+                        createSessionUsingPhoto();
+                    } catch (ConnectException | InternalException e) {
+                        hideSpinner();
+                        //  errorTextView.setText(e.getMessage());
+                    }
+                }).setNegativeButton("Cancel", (dialog, which) -> hideSpinner()).setCancelable(false).show();
     }
 }

@@ -1,13 +1,16 @@
 package com.microblink.result;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.LruCache;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -15,12 +18,13 @@ import com.microblink.entities.parsers.config.fieldbyfield.FieldByFieldBundle;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
 import com.microblink.help.pageindicator.TabPageIndicator;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.RecognitionResultEntry;
 import com.microblink.util.Globals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ResultActivity extends FragmentActivity implements
         ResultFragment.IResultFragmentActivity,
@@ -47,6 +51,7 @@ public class ResultActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setActivityContentView();
+        CalculteBitmap();
         Intent intent = getIntent();
         mResultType = (ResultType) intent.getSerializableExtra(EXTRAS_RESULT_TYPE);
         mRecognizerBundle = new RecognizerBundle();
@@ -112,21 +117,74 @@ public class ResultActivity extends FragmentActivity implements
 
         Globals.extractedData = null;
     }
+
+    private LruCache<String, Bitmap> mMemoryCache;
+
+    private void CalculteBitmap() {
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+// Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+
+            mMemoryCache.put(key, bitmap);
+
+    }
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
+    }
+    public static Bitmap scaleDownBitmap(Bitmap photo, int newHeight, Context context) {
+
+        final float densityMultiplier = context.getResources().getDisplayMetrics().density;
+
+        int h= (int) (newHeight*densityMultiplier);
+        int w= (int) (h * photo.getWidth()/((double) photo.getHeight()));
+
+        photo=Bitmap.createScaledBitmap(photo, w, h, true);
+
+        return photo;
+    }
+
     public void footerButtonConfirmClickHandler(View view) {
-        if(Globals.extractedData!=null)
-        {
-            Intent myIntent = new Intent("FBR-IMAGE");
-            myIntent.putExtra("action",serializeToJson(Globals.extractedData));
-            this.sendBroadcast(myIntent);
+        if (Globals.extractedData != null) {
+
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                Bitmap bmp =  scaleDownBitmap(Objects.requireNonNull(Globals.extractedData.get(3).getImageValue()),200,this);
+                Globals.extractedData.remove(3);
+                Globals.extractedData.remove(3);
+                Intent myIntent = new Intent("FBR-IMAGE");
+                myIntent.putExtra("data", serializeToJson(Globals.extractedData));
+                myIntent.putExtra("img", bmp);
+                this.sendBroadcast(myIntent);
+
+
+
+
+            }
+
+
         }
 
         finish();
     }
+   // SharedData date;
     public String serializeToJson(List<RecognitionResultEntry> myClass) {
         Gson gson = new Gson();
         String j = gson.toJson(myClass);
         return j;
     }
+
     @Override
     public Recognizer<Recognizer, Recognizer.Result> getRecognizerAtPosition(int resultPosition) {
         if (resultPosition < 0 || resultPosition >= mRecognizersWithResult.size()) {

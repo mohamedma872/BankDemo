@@ -2,7 +2,7 @@ package com.microblink.result.extract.usdl;
 
 import com.microblink.entities.recognizers.blinkbarcode.usdl.UsdlKeys;
 import com.microblink.entities.recognizers.blinkbarcode.usdl.UsdlRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 import com.microblink.result.extract.RecognitionResultEntry;
 

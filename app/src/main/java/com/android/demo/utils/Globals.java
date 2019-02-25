@@ -1,6 +1,7 @@
 package com.android.demo.utils;
 
-import com.microblink.result.extract.RecognitionResultEntry;
+
+import com.android.demo.result.extract.RecognitionResultEntry;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.newzealand;
 
 import com.microblink.entities.recognizers.blinkid.newzealand.NewZealandDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class NewZealandDLFrontSideRecognitionResultExtractor extends BlinkIdExtractor<NewZealandDlFrontRecognizer.Result, NewZealandDlFrontRecognizer> {

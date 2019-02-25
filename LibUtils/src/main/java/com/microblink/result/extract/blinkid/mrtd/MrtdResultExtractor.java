@@ -3,7 +3,7 @@ package com.microblink.result.extract.blinkid.mrtd;
 import android.support.annotation.CallSuper;
 
 import com.microblink.entities.recognizers.Recognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.recognizers.blinkid.mrtd.MRTDResult;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 

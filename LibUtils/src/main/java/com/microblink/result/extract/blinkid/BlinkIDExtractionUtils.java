@@ -12,7 +12,7 @@ import com.microblink.entities.recognizers.blinkid.imageresult.FaceImageResult;
 import com.microblink.entities.recognizers.blinkid.imageresult.FullDocumentImageResult;
 import com.microblink.entities.recognizers.blinkid.imageresult.MrzImageResult;
 import com.microblink.entities.recognizers.blinkid.imageresult.SignatureImageResult;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.RecognitionResultEntry;
 
 import java.util.List;

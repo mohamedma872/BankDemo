@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkinput;
 
 import com.microblink.entities.recognizers.blinkbarcode.vin.VinRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 
 public class VinRecognitionResultExtractor extends BaseResultExtractor<VinRecognizer.Result, VinRecognizer> {

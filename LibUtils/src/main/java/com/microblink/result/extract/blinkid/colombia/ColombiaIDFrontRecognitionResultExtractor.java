@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.colombia;
 
 import com.microblink.entities.recognizers.blinkid.colombia.ColombiaIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class ColombiaIDFrontRecognitionResultExtractor extends BlinkIdExtractor<ColombiaIdFrontRecognizer.Result, ColombiaIdFrontRecognizer> {

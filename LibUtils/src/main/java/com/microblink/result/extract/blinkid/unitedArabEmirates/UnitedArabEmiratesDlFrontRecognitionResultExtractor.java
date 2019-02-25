@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.unitedArabEmirates;
 
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class UnitedArabEmiratesDlFrontRecognitionResultExtractor

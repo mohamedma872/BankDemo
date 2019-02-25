@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.microblink.libresult.R;
+import com.android.demo.R;
 
 import java.util.List;
 

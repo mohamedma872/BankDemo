@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.hongkong;
 
 import com.microblink.entities.recognizers.blinkid.hongkong.HongKongIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 import com.microblink.results.date.DateResult;
 

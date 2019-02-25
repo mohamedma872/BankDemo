@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.jordan;
 
 import com.microblink.entities.recognizers.blinkid.jordan.JordanIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class JordanIDFrontRecognitionResultExtractor extends BlinkIdExtractor<JordanIdFrontRecognizer.Result, JordanIdFrontRecognizer> {

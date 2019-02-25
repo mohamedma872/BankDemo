@@ -5,7 +5,7 @@ import android.content.Context;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.blinkid.mrtd.MrtdDocumentType;
 import com.microblink.entities.recognizers.blinkid.mrtd.MrzResult;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIDExtractionUtils;
 import com.microblink.results.date.Date;
 import com.microblink.results.date.DateResult;

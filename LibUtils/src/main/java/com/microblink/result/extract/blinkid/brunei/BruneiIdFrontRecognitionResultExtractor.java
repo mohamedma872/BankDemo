@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.brunei;
 
 import com.microblink.entities.recognizers.blinkid.brunei.BruneiIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class BruneiIdFrontRecognitionResultExtractor extends BlinkIdExtractor<BruneiIdFrontRecognizer.Result, BruneiIdFrontRecognizer> {

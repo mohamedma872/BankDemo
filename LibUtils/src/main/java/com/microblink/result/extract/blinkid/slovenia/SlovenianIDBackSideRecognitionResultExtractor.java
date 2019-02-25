@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.slovenia;
 
 import com.microblink.entities.recognizers.blinkid.slovenia.SloveniaIdBackRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.mrtd.MrtdResultExtractor;
 
 public class SlovenianIDBackSideRecognitionResultExtractor extends MrtdResultExtractor<SloveniaIdBackRecognizer.Result, SloveniaIdBackRecognizer> {

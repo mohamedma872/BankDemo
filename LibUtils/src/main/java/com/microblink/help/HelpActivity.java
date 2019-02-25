@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 import com.microblink.help.adapters.BlinkOCRAdapter;
 import com.microblink.help.pageindicator.UnderlinePageIndicator;
 import com.microblink.locale.LanguageUtils;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 
 /**
  * Activity responsible for showing help screens.

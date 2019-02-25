@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.kuwait;
 
 import com.microblink.entities.recognizers.blinkid.kuwait.KuwaitIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class KuwaitIdFrontRecognitionResultExtractor  extends BlinkIdExtractor<KuwaitIdFrontRecognizer.Result, KuwaitIdFrontRecognizer> {

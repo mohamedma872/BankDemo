@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.australia;
 
 import com.microblink.entities.recognizers.blinkid.australia.AustraliaDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class AustralianDLFrontSideRecognitionResultExtractor extends BlinkIdExtractor<AustraliaDlFrontRecognizer.Result, AustraliaDlFrontRecognizer> {

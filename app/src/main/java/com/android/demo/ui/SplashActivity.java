@@ -6,16 +6,20 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 
 import com.android.demo.R;
+import com.android.demo.utils.Globals;
 import com.android.demo.utils.Ipermission.RuntimePermissionsActivity;
 import com.android.demo.utils.NetworkUtil;
+import com.android.demo.utils.SessionManager;
 
 public class SplashActivity extends RuntimePermissionsActivity {
     private static final int REQUEST_PERMISSIONS = 20;
-
+    SessionManager sessionmanager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
+        sessionmanager = new SessionManager(this);
+        Globals.UserID = sessionmanager.getToken();
         SplashActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.ACCESS_NETWORK_STATE,
                         Manifest.permission.INTERNET,

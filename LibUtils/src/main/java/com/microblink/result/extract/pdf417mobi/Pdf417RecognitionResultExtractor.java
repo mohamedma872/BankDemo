@@ -1,7 +1,7 @@
 package com.microblink.result.extract.pdf417mobi;
 
 import com.microblink.entities.recognizers.blinkbarcode.pdf417.Pdf417Recognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 
 import java.util.Arrays;

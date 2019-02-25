@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.spain;
 
 import com.microblink.entities.recognizers.blinkid.spain.SpainDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class SpainDlFrontRecognitionResultExtractor extends BlinkIdExtractor<SpainDlFrontRecognizer.Result, SpainDlFrontRecognizer> {

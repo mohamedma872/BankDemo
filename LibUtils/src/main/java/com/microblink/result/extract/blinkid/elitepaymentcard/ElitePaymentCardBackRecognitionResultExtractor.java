@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.elitepaymentcard;
 
 import com.microblink.entities.recognizers.blinkid.elitepaymentcard.ElitePaymentCardBackRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class ElitePaymentCardBackRecognitionResultExtractor extends BlinkIdExtractor<ElitePaymentCardBackRecognizer.Result, ElitePaymentCardBackRecognizer> {

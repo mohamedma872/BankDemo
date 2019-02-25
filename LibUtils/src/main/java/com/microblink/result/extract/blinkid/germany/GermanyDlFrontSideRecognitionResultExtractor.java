@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.germany;
 
 import com.microblink.entities.recognizers.blinkid.germany.GermanyDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 

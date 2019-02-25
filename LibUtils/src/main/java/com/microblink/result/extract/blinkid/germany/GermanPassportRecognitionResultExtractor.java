@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.germany;
 
 import com.microblink.entities.recognizers.blinkid.germany.GermanyPassportRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class GermanPassportRecognitionResultExtractor extends BlinkIdExtractor<GermanyPassportRecognizer.Result, GermanyPassportRecognizer> {

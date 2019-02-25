@@ -2,7 +2,7 @@ package com.microblink.result.extract.pdf417mobi;
 
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.successframe.SuccessFrameGrabberRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.BaseResultExtractor;
 import com.microblink.result.extract.ResultExtractorFactoryProvider;
 

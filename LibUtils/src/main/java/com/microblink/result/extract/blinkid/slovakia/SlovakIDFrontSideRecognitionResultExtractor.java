@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.slovakia;
 
 import com.microblink.entities.recognizers.blinkid.slovakia.SlovakiaIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class SlovakIDFrontSideRecognitionResultExtractor  extends BlinkIdExtractor<SlovakiaIdFrontRecognizer.Result, SlovakiaIdFrontRecognizer> {

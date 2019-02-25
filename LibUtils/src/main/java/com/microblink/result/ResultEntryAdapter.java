@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.RecognitionResultEntry;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.ireland;
 
 import com.microblink.entities.recognizers.blinkid.ireland.IrelandDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class IrelandDlFrontRecognitionResultExtractor extends BlinkIdExtractor<IrelandDlFrontRecognizer.Result, IrelandDlFrontRecognizer> {

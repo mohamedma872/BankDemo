@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.sweden;
 
 import com.microblink.entities.recognizers.blinkid.sweden.dl.SwedenDlFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class SwedenDlFrontRecognitionResultExtractor extends BlinkIdExtractor<SwedenDlFrontRecognizer.Result, SwedenDlFrontRecognizer> {

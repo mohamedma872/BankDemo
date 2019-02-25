@@ -1,7 +1,7 @@
 package com.microblink.result.extract.blinkid.indonesia;
 
 import com.microblink.entities.recognizers.blinkid.indonesia.IndonesiaIdFrontRecognizer;
-import com.microblink.libresult.R;
+import com.android.demo.R;
 import com.microblink.result.extract.blinkid.BlinkIdExtractor;
 
 public class IndonesianIDFrontSideRecognitionResultExtractor extends BlinkIdExtractor<IndonesiaIdFrontRecognizer.Result, IndonesiaIdFrontRecognizer> {
