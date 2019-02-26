@@ -1,29 +1,20 @@
 package com.android.demo.ui;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.aimbrain.sdk.Manager;
 import com.aimbrain.sdk.exceptions.InternalException;
@@ -46,7 +37,7 @@ import com.aimbrain.sdk.server.VoiceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.VoiceTokenCallback;
 import com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity;
 import com.android.demo.R;
-import com.android.demo.score.ScoreManager;
+import com.android.demo.utils.score.ScoreManager;
 import com.android.demo.utils.Globals;
 import com.android.demo.utils.Spinner;
 import com.android.volley.NetworkResponse;

@@ -31,7 +31,7 @@
             android:layout_weight="1" >
         </android.support.v4.view.ViewPager>
 
-        <com.android.demo.help.pageindicator.UnderlinePageIndicator
+        <com.android.demo.utils.help.pageindicator.UnderlinePageIndicator
             android:id="@+id/underline_indicator"
             android:layout_width="fill_parent"
             android:layout_height="4dp" />

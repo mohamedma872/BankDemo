@@ -48,9 +48,9 @@ import com.aimbrain.sdk.server.VoiceCapturesAuthenticateCallback;
 import com.aimbrain.sdk.server.VoiceTokenCallback;
 import com.aimbrain.sdk.voiceCapture.VoiceCaptureActivity;
 import com.android.demo.R;
-import com.android.demo.result.ResultActivity;
-import com.android.demo.result.extract.RecognitionResultEntry;
-import com.android.demo.score.ScoreManager;
+import com.android.demo.utils.result.ResultActivity;
+import com.android.demo.utils.result.extract.RecognitionResultEntry;
+import com.android.demo.utils.score.ScoreManager;
 import com.android.demo.utils.ImageSettings;
 import com.android.demo.utils.Globals;
 import com.android.demo.utils.SessionManager;
@@ -61,7 +61,6 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
-import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdBackRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdFrontRecognizer;
 import com.microblink.uisettings.ActivityRunner;
@@ -290,6 +289,12 @@ public class RegisterActivity extends AppCompatActivity {
                                     })
                                     .show();
                         } else if (session.getFaceStatus() == SessionModel.ENROLLED) {
+                            new AlertDialog.Builder(RegisterActivity.this)
+                                    .setTitle("Enrollment")
+                                    .setMessage("You have Enrolled Before.")
+                                    .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+                                    })
+                                    .show();
 
                         } else if (session.getFaceStatus() == SessionModel.NOT_ENROLLED) {
                             SendCaptureImage();

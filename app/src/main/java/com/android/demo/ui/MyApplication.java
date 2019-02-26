@@ -16,6 +16,6 @@ public class MyApplication extends AMBNApplication {
         MicroblinkSDK.setIntentDataTransferMode(IntentDataTransferMode.PERSISTED_OPTIMISED);
         Manager.getInstance().startCollectingData(null);
 
-        Manager.getInstance().configure("2c6f5846-55b4-43d4-a63d-b722942412ed", "Sxo8QxtNgHvBWc7zgOlN70WaUto+EYmV3fg2UQkO5HRDyERJSd3RyP2K5OyTGKEhRjxz6GGF//OBsf6wAxzltA==");
+        Manager.getInstance().configure("b8ab1cae-856a-4b02-983f-b105bcd48bc2", "D9OaQIc1EgVNeeFRAt06HP1nCQ2OFomXMPDRopvsdidDgbj/JWj4vkkOtmJ1dXDGvfqr9CWv0tzPgyku2JNWYA==");
     }
 }
