@@ -6,8 +6,8 @@ android {
         applicationId "com.android.demo"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 7
-        versionName "7.0"
+        versionCode 8
+        versionName "8.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -29,7 +29,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
     packagingOptions {
         exclude 'META-INF/ASL2.0'
         exclude 'META-INF/DEPENDENCIES'
@@ -58,7 +57,7 @@ dependencies {
     implementation('com.microblink:blinkid:4.6.0@aar') {
         transitive = true
     }
-   // implementation project(':LibUtils')
+    // implementation project(':LibUtils')
     implementation project(':aimbrain')
     //gson
     implementation 'com.google.code.gson:gson:2.8.5'

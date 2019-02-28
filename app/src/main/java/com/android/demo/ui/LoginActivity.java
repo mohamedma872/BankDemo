@@ -500,7 +500,7 @@ public class LoginActivity extends AppCompatActivity {
                                     // startDemoBankActivity();
                                     new AlertDialog.Builder(LoginActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage("now we will authenticate voice")
+                                            .setMessage(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 // user is not logged in redirect him to Login Activity
                                                 Intent i = new Intent(LoginActivity.this, HomeActivity.class);

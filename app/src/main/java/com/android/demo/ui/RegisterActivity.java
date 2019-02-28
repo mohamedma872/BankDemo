@@ -211,7 +211,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan:
-               UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
+                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
                 ImageSettings.enableAllImages(uaeFront);
                 UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
                 ImageSettings.enableAllImages(uaeBack);
@@ -793,7 +793,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     // startDemoBankActivity();
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage("now we will authenticate voice")
+                                            .setMessage(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 voiceAuthType();
                                             })
@@ -875,9 +875,10 @@ public class RegisterActivity extends AppCompatActivity {
                             if (voiceAuthenticateModel.getScore() >= 0.5) {
                                 if (voiceAuthenticateModel.getLiveliness() >= 0.5) {
                                     // startDemoBankActivity();
+
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage("Welcome To the app Mr/Mss : " + Globals.extractedData.get(1).getValue())
+                                            .setMessage(String.format("Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 voiceAuthType();
                                             })

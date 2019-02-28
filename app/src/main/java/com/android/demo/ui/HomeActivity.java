@@ -403,7 +403,7 @@ public class HomeActivity extends AppCompatActivity {
 
                                     new AlertDialog.Builder(HomeActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage("Welcome To the app Mr/Mss " +Customername)
+                                            .setMessage(String.format("Welcome To App MR/MSS : "+Customername+" , Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
 
                                             })
