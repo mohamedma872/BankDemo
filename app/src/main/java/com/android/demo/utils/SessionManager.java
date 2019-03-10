@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.sql.Timestamp;
+
 public class SessionManager {
     // Shared Preferences
     SharedPreferences pref;
@@ -37,7 +39,7 @@ public class SessionManager {
         editor.apply();
     }
     public long getToken() {
-        return   pref.getLong("UserID", 177);
+        return   pref.getLong("UserID", new Timestamp(System.currentTimeMillis()).getTime());
 
     }
 }

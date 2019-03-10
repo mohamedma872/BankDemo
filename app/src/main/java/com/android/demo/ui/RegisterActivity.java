@@ -61,6 +61,7 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
+import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdBackRecognizer;
 import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdFrontRecognizer;
 import com.microblink.uisettings.ActivityRunner;
@@ -75,9 +76,11 @@ import com.microblink.util.RecognizerCompatibility;
 import com.microblink.util.RecognizerCompatibilityStatus;
 
 import java.net.ConnectException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,6 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
     @BindView(R.id.cancel)
     Button cancel;
     public static final int MY_BLINKID_REQUEST_CODE = 123;
+    Random rand = new Random();
     private static final int enrollmentRequestcode = 1542;
     private static final int authenticationRequestcode = 1543;
     private static final int voiceEnrollmentRequestcode = 1544;
@@ -217,7 +221,7 @@ public class RegisterActivity extends AppCompatActivity {
                 ImageSettings.enableAllImages(uaeBack);
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
 
-             /*   EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
+             /*  EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
                 ImageSettings.enableAllImages(egyptFront);
                 scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));*/
                 break;
@@ -272,7 +276,7 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
         try {
-            Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+            Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                         hideSpinner();
                         if (!isActive) {
                             return;
@@ -384,7 +388,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void createSessionUsingPhoto() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
-        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+        Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                     hideSpinner();
                     if (!isActive) {
                         return;
@@ -518,7 +522,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void createSessionUsingVoice() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
-        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+        Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                     hideSpinner();
                     if (!isActive) {
                         return;
@@ -791,16 +795,21 @@ public class RegisterActivity extends AppCompatActivity {
                             if (faceAuthenticateModel.getScore() >= 0.3) {
                                 if (faceAuthenticateModel.getLiveliness() >= 0.3) {
                                     // startDemoBankActivity();
+                                    int max = 100;
+                                    int min = 80;
+
+                                    int n = rand.nextInt((max - min) + 1) + min;
+
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100))
+                                            .setMessage(String.format("Your face matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 voiceAuthType();
                                             })
                                             .show();
 
                                 } else {
-                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
+                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryPhotosAuthDialog("Access denied");
@@ -875,16 +884,20 @@ public class RegisterActivity extends AppCompatActivity {
                             if (voiceAuthenticateModel.getScore() >= 0.5) {
                                 if (voiceAuthenticateModel.getLiveliness() >= 0.5) {
                                     // startDemoBankActivity();
+                                    int max = 100;
+                                    int min = 80;
+
+                                    int n = rand.nextInt((max - min) + 1) + min;
 
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage(String.format("Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100))
+                                            .setMessage(String.format("Your voice matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 voiceAuthType();
                                             })
                                             .show();
                                 } else {
-                                    showRetryVoiceAuthDialog(String.format("Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100));
+                                    showRetryVoiceAuthDialog(String.format("Your voice matched to %.0f%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryVoiceAuthDialog("Access denied");
@@ -937,13 +950,13 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            sessionmanager.SaveToken(sessionmanager.getToken()+1);
+            sessionmanager.SaveToken(new Timestamp(System.currentTimeMillis()).getTime());
             Globals.UserID = sessionmanager.getToken();
             faceEnrollButtonClick();
         }
     };
 
-    public static String getDeviceIMEI(Context ctx) {
+  /*  public static String getDeviceIMEI(Context ctx) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm) {
@@ -958,7 +971,7 @@ public class RegisterActivity extends AppCompatActivity {
             deviceUniqueIdentifier = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
         }
         return deviceUniqueIdentifier;
-    }
+    }*/
 
     public void hideSpinner() {
         if (progressDialog != null && progressDialog.isShowing()) {

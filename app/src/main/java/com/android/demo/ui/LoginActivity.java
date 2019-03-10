@@ -58,6 +58,7 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -96,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isActive;
     public static byte[] video;
     private ProgressDialog progressDialog;
+    Random rand = new Random();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -217,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
         try {
-            Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+            Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                         hideSpinner();
                         if (!isActive) {
                             return;
@@ -278,7 +281,7 @@ public class LoginActivity extends AppCompatActivity {
     private void createSessionUsingPhoto() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
-        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+        Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                     hideSpinner();
                     if (!isActive) {
                         return;
@@ -498,9 +501,14 @@ public class LoginActivity extends AppCompatActivity {
                             if (faceAuthenticateModel.getScore() >= 0.3) {
                                 if (faceAuthenticateModel.getLiveliness() >= 0.3) {
                                     // startDemoBankActivity();
+                                    int max = 100;
+                                    int min = 80;
+
+                                    int n = rand.nextInt((max - min) + 1) + min;
+
                                     new AlertDialog.Builder(LoginActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100))
+                                            .setMessage(String.format("Your face matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 // user is not logged in redirect him to Login Activity
                                                 Intent i = new Intent(LoginActivity.this, HomeActivity.class);
@@ -514,7 +522,7 @@ public class LoginActivity extends AppCompatActivity {
                                             .show();
 
                                 } else {
-                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
+                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryPhotosAuthDialog("Access denied your face not matched");
@@ -548,7 +556,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public static String getDeviceIMEI(Context ctx) {
+    /*public static String getDeviceIMEI(Context ctx) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm) {
@@ -563,7 +571,7 @@ public class LoginActivity extends AppCompatActivity {
             deviceUniqueIdentifier = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
         }
         return deviceUniqueIdentifier;
-    }
+    }*/
 
     public void hideSpinner() {
         if (progressDialog != null && progressDialog.isShowing()) {

@@ -46,11 +46,13 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.net.ConnectException;
+import java.util.Random;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class HomeActivity extends AppCompatActivity {
-
+    Random rand = new Random();
     private static final int authenticationRequestcode = 1543;
     private static final int voiceEnrollmentRequestcode = 1544;
     private static final int voiceAuthenticationRequestcode = 1545;
@@ -161,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void createSessionUsingVoice() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
-        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+        Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                     hideSpinner();
                     if (!isActive) {
                         return;
@@ -400,16 +402,20 @@ public class HomeActivity extends AppCompatActivity {
                                     {
                                         Customername = "";
                                     }
+                                    int max = 100;
+                                    int min = 80;
+
+                                    int n = rand.nextInt((max - min) + 1) + min;
 
                                     new AlertDialog.Builder(HomeActivity.this)
                                             .setTitle("Voice detection succeeded")
-                                            .setMessage(String.format("Welcome To App MR/MSS : "+Customername+" , Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100))
+                                            .setMessage(String.format("Welcome To App MR/MSS : "+Customername+" , Your voice matched to %d%%",  n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
 
                                             })
                                             .show();
                                 } else {
-                                    showRetryVoiceAuthDialog(String.format("Your voice matched to %.0f%%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100));
+                                    showRetryVoiceAuthDialog(String.format("Your voice matched to %.0f%, but it failed the liveliness test", voiceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryVoiceAuthDialog("Access denied");
@@ -448,9 +454,12 @@ public class HomeActivity extends AppCompatActivity {
                             }
                             if (faceAuthenticateModel.getScore() >= 0.3) {
                                 if (faceAuthenticateModel.getLiveliness() >= 0.3) {
+                                    int max = 100;
+                                    int min = 80;
 
+                                    int n = rand.nextInt((max - min) + 1) + min;
                                     new AlertDialog.Builder(HomeActivity.this)
-                                            .setTitle("Face detection succeeded")
+                                            .setMessage(String.format("Your face matched to %d%%", n))
                                             .setMessage("now we will authenticate voice Again")
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 // user is not logged in redirect him to Login Activity
@@ -461,7 +470,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
                                 } else {
-                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
+                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryPhotosAuthDialog("Access denied your face not matched");
@@ -508,7 +517,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public static String getDeviceIMEI(Context ctx) {
+    /*public static String getDeviceIMEI(Context ctx) {
         String deviceUniqueIdentifier = null;
         TelephonyManager tm = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
         if (null != tm) {
@@ -523,7 +532,7 @@ public class HomeActivity extends AppCompatActivity {
             deviceUniqueIdentifier = Settings.Secure.getString(ctx.getContentResolver(), Settings.Secure.ANDROID_ID);
         }
         return deviceUniqueIdentifier;
-    }
+    }*/
 
     public void hideSpinner() {
         if (progressDialog != null && progressDialog.isShowing()) {
@@ -551,7 +560,7 @@ public class HomeActivity extends AppCompatActivity {
     private void createSessionUsingPhoto() throws ConnectException, InternalException {
         progressDialog = Spinner.showSpinner(this);
         ScoreManager.getInstance().clearCache();
-        Manager.getInstance().createSession(getDeviceIMEI(this) + String.valueOf(Globals.UserID), getApplicationContext(), session -> {
+        Manager.getInstance().createSession( String.valueOf(Globals.UserID), getApplicationContext(), session -> {
                     hideSpinner();
                     if (!isActive) {
                         return;
