@@ -482,7 +482,6 @@ public class RegisterActivity extends AppCompatActivity {
             hideSpinner();
             this.video = VideoFaceCaptureActivity.video;
 
-
             new AlertDialog.Builder(RegisterActivity.this)
                     .setMessage("Video Enrollment finished successfully when you press ok we will open voice Enrollment")
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
@@ -930,19 +929,7 @@ public class RegisterActivity extends AppCompatActivity {
 //        sendCollectedData();
     }
 
-    private void sendCollectedData() {
-        try {
-            Manager.getInstance().submitCollectedData(new ScoreCallback() {
-                @Override
-                public void success(ScoreModel scoreModel) {
-                    Log.i("DATA SENT", "and collected");
-                    ScoreManager.getInstance().scoreChanged(scoreModel, System.currentTimeMillis());
-                }
-            });
-        } catch (InternalException | ConnectException | SessionException e) {
-            Log.e("signingActivity", "submitCollectedData", e);
-        }
-    }
+
 
     SessionManager sessionmanager;
    // List<RecognitionResultEntry> DataList;
