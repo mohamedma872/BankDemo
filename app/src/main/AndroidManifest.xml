@@ -28,9 +28,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:name=".ui.MyApplication"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme" >
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
 
+        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
         <activity android:name="com.android.demo.ui.RegisterActivity" />
         <activity android:name="com.android.demo.ui.LoginActivity" />
         <activity android:name="com.android.demo.ui.SplashActivity" >

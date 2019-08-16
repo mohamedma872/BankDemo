@@ -143,7 +143,7 @@ public class RegisterActivity extends AppCompatActivity {
         // check if BlinkID is supported on the device
         RecognizerCompatibilityStatus supportStatus = RecognizerCompatibility.getRecognizerCompatibilityStatus(this);
         if (supportStatus != RecognizerCompatibilityStatus.RECOGNIZER_SUPPORTED) {
-            Toast.makeText(this, "BlinkID is not supported! Reason: " + supportStatus.name(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "BlinkID is not supported! Reason4: " + supportStatus.name(), Toast.LENGTH_LONG).show();
         } else {
 
         }
@@ -215,15 +215,15 @@ public class RegisterActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan:
-                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
-                ImageSettings.enableAllImages(uaeFront);
-                UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
-                ImageSettings.enableAllImages(uaeBack);
-                scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
+//                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
+//                ImageSettings.enableAllImages(uaeFront);
+//                UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
+//                ImageSettings.enableAllImages(uaeBack);
+//                scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
 
-             /*  EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
+                EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
                 ImageSettings.enableAllImages(egyptFront);
-                scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));*/
+                scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));
                 break;
             case R.id.cancel:
                 Intent i = new Intent(this, LoginActivity.class);
@@ -328,7 +328,8 @@ public class RegisterActivity extends AppCompatActivity {
     private void SendCaptureImage() {
         progressDialog = Spinner.showSpinner(this);
         List<Bitmap> lst = new ArrayList<>();
-        lst.add(Globals.extractedData.get(3).getImageValue());
+        //egypt
+        lst.add(Globals.extractedData.get(2).getImageValue());
         try {
             Manager.getInstance().sendProvidedFaceCapturesToEnroll(lst, new FaceCapturesEnrollCallback() {
                 @Override
@@ -340,7 +341,7 @@ public class RegisterActivity extends AppCompatActivity {
                 @Override
                 public void failure(VolleyError volleyError) {
                     hideSpinner();
-                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason: " + getErrorMessage(volleyError));
+                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason5: " + getErrorMessage(volleyError));
                 }
             });
         } catch (InternalException e) {
@@ -483,7 +484,7 @@ public class RegisterActivity extends AppCompatActivity {
             this.video = VideoFaceCaptureActivity.video;
 
             new AlertDialog.Builder(RegisterActivity.this)
-                    .setMessage("Video Enrollment finished successfully when you press ok we will open voice Enrollment")
+                    .setMessage("Video Enrollment finished successfully , try to login now")
                     .setPositiveButton(android.R.string.ok, (dialog, which) -> {
 
                       /*  try {
@@ -514,7 +515,7 @@ public class RegisterActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }*/
 
-                        voiceAuthType();
+                        //voiceAuthType();
                     }).show();
         }
     }
@@ -767,12 +768,12 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!isActive) {
                                 return;
                             }
-                            showRetryPhotosEnrollmentDialog("Please re-take the picture, reason: " + getErrorMessage(volleyError));
+                            showRetryPhotosEnrollmentDialog("Please re-take the picture, reason6: " + getErrorMessage(volleyError));
                         }
                     });
                 } catch (ConnectException | InternalException e) {
                     hideSpinner();
-                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason: " + e.getMessage());
+                    showRetryPhotosEnrollmentDialog("Please re-take the picture, reason7: " + e.getMessage());
                 } catch (SessionException e) {
                     hideSpinner();
                     Log.e("signingActivity", "sendProvidedFaceCapturesToEnroll", e);
@@ -803,12 +804,12 @@ public class RegisterActivity extends AppCompatActivity {
                                             .setTitle("Face detection succeeded")
                                             .setMessage(String.format("Your face matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                                voiceAuthType();
+                                               // voiceAuthType();
                                             })
                                             .show();
 
                                 } else {
-                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%, but it failed the liveliness test", faceAuthenticateModel.getScore() * 100));
+                                    showRetryPhotosAuthDialog(String.format("Your face matched to %.0f%, but it failed the liveliness test %d%%", faceAuthenticateModel.getScore() * 100));
                                 }
                             } else {
                                 showRetryPhotosAuthDialog("Access denied");
@@ -821,7 +822,7 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!isActive) {
                                 return;
                             }
-                            showRetryPhotosAuthDialog("Please re-take the picutre, reason: " + getErrorMessage(volleyError));
+                            showRetryPhotosAuthDialog("Please re-take the picutre, reason1: " + getErrorMessage(volleyError));
                         }
                     });
                 } catch (ConnectException | InternalException e) {
@@ -856,12 +857,12 @@ public class RegisterActivity extends AppCompatActivity {
                             if (!isActive) {
                                 return;
                             }
-                            showRetryVoiceEnrollmentDialog("Please retry, reason: " + getErrorMessage(volleyError));
+                            showRetryVoiceEnrollmentDialog("Please retry, reason2: " + getErrorMessage(volleyError));
                         }
                     });
                 } catch (ConnectException | InternalException e) {
                     hideSpinner();
-                    showRetryVoiceEnrollmentDialog("Please retry, reason: " + e.getMessage());
+                    showRetryVoiceEnrollmentDialog("Please retry, reason3: " + e.getMessage());
                 } catch (SessionException e) {
                     hideSpinner();
                     Log.e("signingActivity", "sendProvidedVoiceCapturesToEnroll", e);
@@ -892,7 +893,7 @@ public class RegisterActivity extends AppCompatActivity {
                                             .setTitle("Voice detection succeeded")
                                             .setMessage(String.format("Your voice matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                                                voiceAuthType();
+                                               // voiceAuthType();
                                             })
                                             .show();
                                 } else {

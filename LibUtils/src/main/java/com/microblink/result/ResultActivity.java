@@ -169,8 +169,6 @@ public class ResultActivity extends FragmentActivity implements
                 this.sendBroadcast(myIntent);
 
 
-
-
             }
 
 

@@ -100,7 +100,12 @@ public class HomeActivity extends AppCompatActivity {
                             }).show();
                 }else
                 {
-                    voiceAuthType();
+//                    //voiceAuthType();
+//                    new AlertDialog.Builder(HomeActivity.this)
+//                            .setMessage("Please Register First")
+//                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
+//
+//                            }).show();
                 }
 
                 break;
