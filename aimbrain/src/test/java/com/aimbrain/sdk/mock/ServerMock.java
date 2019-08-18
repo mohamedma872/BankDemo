@@ -1,6 +1,6 @@
 package com.aimbrain.sdk.mock;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.aimbrain.sdk.exceptions.InvalidSignatureException;
 import com.aimbrain.sdk.helper.Base64Helper;

@@ -1,6 +1,6 @@
 package com.aimbrain.sdk.collectors;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import android.view.MotionEvent;
 import android.view.View;
 

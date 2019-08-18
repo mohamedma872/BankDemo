@@ -1,7 +1,7 @@
 package com.aimbrain.sdk.memory;
 
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.aimbrain.sdk.collectors.MotionEventCollector;
 import com.aimbrain.sdk.collectors.SensorEventCollector;

@@ -1,6 +1,6 @@
 package com.android.demo.utils.result.extract.blinkid.mrtd;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 
 import com.android.demo.utils.result.extract.blinkid.BlinkIdExtractor;
 import com.microblink.entities.recognizers.Recognizer;

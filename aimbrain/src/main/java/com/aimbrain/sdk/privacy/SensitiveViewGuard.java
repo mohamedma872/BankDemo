@@ -1,6 +1,6 @@
 package com.aimbrain.sdk.privacy;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import android.view.View;
 import android.view.ViewParent;
 

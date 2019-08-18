@@ -1,6 +1,6 @@
 package com.aimbrain.sdk.server;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.aimbrain.sdk.util.Logger;
 import com.android.volley.AuthFailureError;

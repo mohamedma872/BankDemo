@@ -3,7 +3,7 @@ package com.aimbrain.sdk.motionEvent;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;

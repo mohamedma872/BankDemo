@@ -2,9 +2,9 @@ package com.android.demo.utils.help;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;

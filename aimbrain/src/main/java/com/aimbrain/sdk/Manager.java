@@ -2,7 +2,7 @@ package com.aimbrain.sdk;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;

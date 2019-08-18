@@ -1,6 +1,6 @@
 package com.aimbrain.sdk.server;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 import android.util.Base64;
 
 import com.aimbrain.sdk.helper.Base64Helper;

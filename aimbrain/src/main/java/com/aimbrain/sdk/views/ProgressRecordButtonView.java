@@ -6,8 +6,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.support.annotation.ColorRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.ColorRes;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import com.aimbrain.aimbrain.R;
 import com.aimbrain.sdk.voiceCapture.RecordButtonView;
 
-import static android.support.v4.content.ContextCompat.getColor;
+import static androidx.core.content.ContextCompat.getColor;
 
 public class ProgressRecordButtonView extends RecordButtonView {
 
