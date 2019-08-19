@@ -504,7 +504,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     new AlertDialog.Builder(LoginActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage(String.format("Your face matched to %d%%", n))
+                                            .setMessage(String.format("Your face matched "))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                 // user is not logged in redirect him to Login Activity
                                                 Intent i = new Intent(LoginActivity.this, HomeActivity.class);

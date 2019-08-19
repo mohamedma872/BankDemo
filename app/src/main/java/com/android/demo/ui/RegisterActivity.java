@@ -1,5 +1,7 @@
 package com.android.demo.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -11,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +23,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.util.LruCache;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -87,6 +92,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RegisterActivity extends AppCompatActivity {
+    ObjectAnimator animator;
+    View scannerLayout;
+    View scannerBar;
+
     @BindView(R.id.cancel)
     Button cancel;
     public static final int MY_BLINKID_REQUEST_CODE = 123;
@@ -142,10 +151,39 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
 
         }
-
+        Animation();
 
     }
+private void Animation()
+{
+    //Scanner overlay
+    scannerLayout = findViewById(R.id.scannerLayout);
+    scannerBar = findViewById(R.id.scannerBar);
 
+    animator = null;
+
+    ViewTreeObserver vto = scannerLayout.getViewTreeObserver();
+    vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+                scannerLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            } else {
+                scannerLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+
+            float destination = (float)(scannerLayout.getY() + scannerLayout.getHeight());
+            animator = ObjectAnimator.ofFloat(scannerBar, "translationY", scannerLayout.getY(), destination);
+            animator.setRepeatMode(ValueAnimator.REVERSE);
+            animator.setRepeatCount(ValueAnimator.INFINITE);
+            animator.setInterpolator(new AccelerateDecelerateInterpolator());
+            animator.setDuration(3000);
+            animator.start();
+        }
+    });
+
+}
     private void scanAction(@NonNull UISettings activitySettings, @Nullable Intent helpIntent) {
         setupActivitySettings(activitySettings, helpIntent);
         ActivityRunner.startActivityForResult(this, MY_BLINKID_REQUEST_CODE, activitySettings);
@@ -206,10 +244,10 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(data);
     }
 
-    @OnClick({R.id.scan, R.id.cancel})
+    @OnClick({R.id.scannerLayout, R.id.cancel})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.scan:
+            case R.id.scannerLayout:
                 UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
                 ImageSettings.enableAllImages(uaeFront);
                 UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
@@ -797,7 +835,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     new AlertDialog.Builder(RegisterActivity.this)
                                             .setTitle("Face detection succeeded")
-                                            .setMessage(String.format("Your face matched to %d%%", n))
+                                            .setMessage(String.format("Your face matched"))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                // voiceAuthType();
                                                 Intent i = new Intent(RegisterActivity.this, LoginActivity.class);

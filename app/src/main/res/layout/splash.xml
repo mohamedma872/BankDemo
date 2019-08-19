@@ -5,11 +5,11 @@
     android:background="#fff"
     android:orientation="vertical">
 
-    <ImageView
+    <ImageView android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_horizontal|center_vertical"
-        android:src="@drawable/banklogo" />
+        android:src="@drawable/dulogo" />
 
 
 </LinearLayout>

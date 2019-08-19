@@ -5,32 +5,21 @@
     android:background="#fff"
     android:orientation="vertical">
 
-    <ImageView  android:visibility="gone"
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="35dp"
-        android:src="@drawable/banklogo" />
-<TextView  android:layout_marginTop="35dp"
+        android:src="@drawable/dulogo" />
+<TextView  android:layout_marginTop="150dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:textStyle="bold"
     android:textSize="14pt"
-    android:text="Your account balance is  "/>
-    <TextView  android:layout_marginTop="35dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textStyle="bold"
-        android:textSize="12pt"
-        android:text="$ 50,980,120"/>
-    <TextView  android:layout_marginTop="35dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textSize="14pt"
-        android:text="on 12/04/2019 12:20 pm"/>
+    android:text="Welocome to DU  "/>
+
+
     <Button
         android:visibility="gone"
         android:id="@+id/sigin"
@@ -38,7 +27,7 @@
         android:drawableLeft="@drawable/ic_record_voice_over_black_24dp"
         android:text="Open My Account" />
 
-    <Button android:layout_marginTop="35dp"
+    <Button android:layout_gravity="bottom" android:layout_marginTop="35dp"
         android:id="@+id/back"
         style="@style/button"
         android:text="Done" />
