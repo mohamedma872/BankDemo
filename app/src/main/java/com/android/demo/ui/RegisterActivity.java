@@ -57,6 +57,8 @@ import com.google.gson.Gson;
 import com.microblink.entities.recognizers.Recognizer;
 import com.microblink.entities.recognizers.RecognizerBundle;
 import com.microblink.entities.recognizers.blinkid.egypt.EgyptIdFrontRecognizer;
+import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdBackRecognizer;
+import com.microblink.entities.recognizers.blinkid.unitedArabEmirates.UnitedArabEmiratesIdFrontRecognizer;
 import com.microblink.uisettings.ActivityRunner;
 import com.microblink.uisettings.BaseScanUISettings;
 import com.microblink.uisettings.DocumentUISettings;
@@ -208,15 +210,15 @@ public class RegisterActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scan:
-//                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
-//                ImageSettings.enableAllImages(uaeFront);
-//                UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
-//                ImageSettings.enableAllImages(uaeBack);
-//                scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
+                UnitedArabEmiratesIdFrontRecognizer uaeFront = new UnitedArabEmiratesIdFrontRecognizer();
+                ImageSettings.enableAllImages(uaeFront);
+                UnitedArabEmiratesIdBackRecognizer uaeBack = new UnitedArabEmiratesIdBackRecognizer();
+                ImageSettings.enableAllImages(uaeBack);
+                scanAction(new DocumentUISettings(prepareRecognizerBundle(uaeFront, uaeBack)));
 
-                EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
-                ImageSettings.enableAllImages(egyptFront);
-                scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));
+//                EgyptIdFrontRecognizer egyptFront = new EgyptIdFrontRecognizer();
+//                ImageSettings.enableAllImages(egyptFront);
+//                scanAction(new DocumentUISettings(prepareRecognizerBundle(egyptFront)));
                 break;
             case R.id.cancel:
                 Intent i = new Intent(this, LoginActivity.class);
@@ -322,7 +324,7 @@ public class RegisterActivity extends AppCompatActivity {
         progressDialog = Spinner.showSpinner(this);
         List<Bitmap> lst = new ArrayList<>();
         //egypt
-        lst.add(Globals.extractedData.get(2).getImageValue());
+        lst.add(Globals.extractedData.get(3).getImageValue());
         try {
             Manager.getInstance().sendProvidedFaceCapturesToEnroll(lst, new FaceCapturesEnrollCallback() {
                 @Override
@@ -798,6 +800,15 @@ public class RegisterActivity extends AppCompatActivity {
                                             .setMessage(String.format("Your face matched to %d%%", n))
                                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                                // voiceAuthType();
+                                                Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                                                // Closing all the Activities
+                                                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                                                // Add new Flag to start new Activity
+                                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                                                // Staring Login Activity
+                                                startActivity(i);
                                             })
                                             .show();
 
